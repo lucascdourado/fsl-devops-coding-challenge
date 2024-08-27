@@ -3,10 +3,13 @@ kind: Service
 metadata:
   name: fsl-service
   namespace: production
+  labels:
+    app: fsl-app
 spec:
+  type: LoadBalancer
   selector:
     app: fsl-app
   ports:
     - protocol: TCP
-      port: 8080
+      port: 80
       targetPort: 8080
