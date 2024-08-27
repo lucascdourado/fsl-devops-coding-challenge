@@ -17,8 +17,12 @@ jobs:
     - name: Change Dir
       run: cd codebase/rdicidr-0.1.0
 
+    - name: NPM Init
+      run: npm init -y
+      working-directory: codebase/rdicidr-0.1.0
+
     - name: Install dependencies
-      run: npm install
+      run: npm install && npm install eslint prettier
       working-directory: codebase/rdicidr-0.1.0
 
     - name: Linter
@@ -38,7 +42,7 @@ jobs:
       working-directory: codebase/rdicidr-0.1.0
 
     - name: Build Docker
-      run: docker build -t ${{secrets.DOCKERHUB_USERNAME}}/fsl:latest
+      run: docker build -t ${{secrets.DOCKERHUB_USERNAME}}/fsl:latest .
       working-directory: codebase/rdicidr-0.1.0
 
     - name: Log in DockerHub
