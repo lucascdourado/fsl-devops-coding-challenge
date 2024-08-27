@@ -1,0 +1,49 @@
+name: FSL CI
+
+on: [pull_request]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v2
+
+    - name: Set up Node
+      uses: actions/setup-node@v2
+      with:
+        node-version: '15'
+    
+    - name: Change Dir
+      run: cd codebase/rdicidr-0.1.0
+
+    - name: Install dependencies
+      run: npm install
+      working-directory: codebase/rdicidr-0.1.0
+
+    - name: Linter
+      run: npm run lint
+      working-directory: codebase/rdicidr-0.1.0
+
+    - name: Prettier
+      run: npm run prettier
+      working-directory: codebase/rdicidr-0.1.0
+
+    - name: Tests
+      run: CI=true npm run test
+      working-directory: codebase/rdicidr-0.1.0
+
+    - name: Build
+      run: npm run build
+      working-directory: codebase/rdicidr-0.1.0
+
+    - name: Build Docker
+      run: docker build -t ${{secrets.DOCKERHUB_USERNAME}}/fsl:latest
+      working-directory: codebase/rdicidr-0.1.0
+
+    - name: Log in DockerHub
+      run: echo "${{secrets.DOCKERHUB_TOKEN}}" | docker login -u "${{secrets.DOCKERHUB_USERNAME}}" --password-stdin
+
+    - name: Push Docker
+      run: docker push ${{secrets.DOCKERHUB_USERNAME}}/fsl:latest
+      working-directory: codebase/rdicidr-0.1.0

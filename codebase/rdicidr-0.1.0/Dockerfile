@@ -1,21 +1,27 @@
-FROM node:15 as builder
+FROM node:15-alpine as builder
 
-WORKDIR
+WORKDIR /app
 
-COPY
+COPY package*.json ./
 
-RUN 
+RUN npm install
 
-COPY
+COPY . .
 
-RUN 
+RUN npm run build
 
-FROM
+FROM node:15-alpine
 
-WORKDIR
+WORKDIR /app
 
-COPY
+COPY --from=builder /app/node_modules ./node_modules
 
-RUN 
+COPY --from=builder /app/build ./build
 
-ENTRYPOINT 
+COPY . .
+
+ENV PORT 8080 
+
+EXPOSE 8080
+
+ENTRYPOINT ["npm", "start"]
